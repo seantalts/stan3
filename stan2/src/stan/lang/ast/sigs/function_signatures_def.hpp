@@ -411,6 +411,15 @@ namespace stan {
       msgs << ")" << std::endl;
     }
 
+    void function_signatures::print_signatures(std::ostream& out) {
+      for (auto&& kv :  sigs_map_) {
+        for (auto&& sig : kv.second) {
+          out << sig.first;
+          print_signature(kv.first, sig.second, false, out);
+        }
+      }
+    }
+
     bare_expr_type function_signatures::get_result_type(const std::string& name,
                                         const std::vector<bare_expr_type>& args,
                                         std::ostream& error_msgs,

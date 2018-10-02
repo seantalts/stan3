@@ -143,3 +143,15 @@ math-update/%: math-update
 # Debug target that allows you to print a variable
 ##
 print-%  : ; @echo $* = $($*)
+
+print_sigs: src/stan/lang/ast/sigs/* src/stan/lang/function_signatures.h
+	$(LINK.cc) src/stan/lang/ast/sigs/print_sigs.cpp -o print_sigs
+
+sigs.txt: print_sigs
+	./print_sigs > sigs.txt
+
+math.cpp: sigs.txt gen_math_cpp.py
+	python gen_math_cpp.py < sigs.txt > math.cpp
+
+math.o: math.cpp
+	$(COMPILE.cc) math.cpp -o math.o
