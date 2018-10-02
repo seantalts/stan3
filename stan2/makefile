@@ -144,5 +144,5 @@ math-update/%: math-update
 ##
 print-%  : ; @echo $* = $($*)
 
-print_sigs: src/stan/lang/ast/sigs/* src/stan/lang/function_signatures.h
-	$(LINK.cc) -Isrc -isystem $(BOOST) src/stan/lang/ast/sigs/print_sigs.cpp -o print_sigs
+print_sigs: test/libstanc.a
+	$(LINK.cc) -Ltest -lstanc src/stan/lang/ast/sigs/print_sigs.cpp -o print_sigs
