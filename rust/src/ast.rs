@@ -1,12 +1,18 @@
 //XXX Add line numbers...?
 
-#[derive(Debug, Hash, PartialEq, Eq)]
+#[derive(Debug, Hash, PartialEq, Eq, Clone)]
 pub enum Expr {
     Int(i32),
     Str(String),
     Real(String),
     Var(String),
-    FnApp(String, Vec<Box<Expr>>),
+    FnApp(String, Vec<Expr>),
+}
+
+#[derive(Debug, Hash, PartialEq, Eq, Clone)]
+pub enum Statement {
+    Expr(Expr),
+    Assign(String, Expr),
 }
 
 pub enum TypePrim {
