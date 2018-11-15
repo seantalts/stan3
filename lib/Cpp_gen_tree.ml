@@ -2,17 +2,6 @@ open Core_kernel
 
 type litType = Int | Real | Str
 
-and sourceMap = {
-  file: string;
-  line_start: int;
-  line_end: int;
-  col_start: int;
-  col_end: int;
-}
-
-
-(* Probably need a way to go from something like a sourcemap to
-   current_statement_begin__?*)
 and cond_op =
   | Equals
   | NEquals
@@ -28,7 +17,6 @@ and expr =
   | Cond of expr * cond_op * expr
   | ArrayExpr of expr list (* array literal? *)
   | Indexed of expr * expr list
-  (* Do we need RowVector? CondFunApp?*)
 
 and infixop =
   | Plus
@@ -68,45 +56,32 @@ and statement =
 and stantype =
   | SInt
   | SReal
-  | SVector of expr option
-  | SRowVector of expr option
-  | SMatrix of (expr * expr) option
-  | SArray of stantype * expr option
+  | SArray of stantype
+  | SVector
+  | SRowVector
+  | SMatrix
 
-and transformation =
-  | Identity
-  | Lower of expr
-  | Upper of expr
-  | LowerUpper of expr * expr
-  | LocationScale of expr * expr
-  | Ordered
-  | PositiveOrdered
-  | Simplex
-  | UnitVector
-  | CholeskyCorr
-  | CholeskyCov
-  | Correlation
-  | Covariance
-
-and argmod = Data | ANone
+and autodiff_type =
+  | AVar of stantype
+  | AData of stantype
 
 and fndef = {
-  returntype: stantype option;
+  returntype: autodiff_type option;
   name: string;
-  arguments: vardecl list;
+  arguments: ad_vardecl list;
   body: statement;
+  templates: string list;
 }
 
-and vardecl = stantype * string
+and ad_vardecl = autodiff_type * string
 
-and block = (vardecl list) * (statement list)
+and vardecl = stantype * string
 
 and mir = {
   functions: fndef list;
   datafields: vardecl list;
   params: vardecl list;
-  transformations: string * transformation list;
-  ctor: statement list;
-  gq: block;
+  methods: fndef list;
+  ctor: (vardecl list) * statement list;
 }
 [@@deriving sexp, hash]
